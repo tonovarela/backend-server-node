@@ -10,20 +10,28 @@ var app = express();
 
 //Listar todos los usuarios
 app.get("/", (req, res, next) => {
-    Usuario.find({}, "nombre role email img").exec((err, usuarios) => {
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                mensaje: "Error cargando usuarios",
-                errors: err
+    let desde = req.query.desde || 0;
+    desde = Number(desde);
+
+    Usuario.find({}, "nombre role email img")
+        .skip(desde)
+        .limit(5)
+        .exec((err, usuarios) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: "Error cargando usuarios",
+                    errors: err
+                });
+            }
+            Usuario.count({}, (err, conteo) => {
+                return res.status(200).json({
+                    ok: true,
+                    usuarios,
+                    total: conteo
+                });
             });
-        }
-        console.log(usuarios);
-        return res.status(200).json({
-            ok: true,
-            usuarios
         });
-    });
 });
 
 // Actualizar usuario
