@@ -24,6 +24,10 @@ var usuarioSchema = new Schema({
         type: String,
         required: false
     },
+    google: {
+        type: Boolean,
+        default: false
+    },
     role: {
         type: String,
         required: true,
